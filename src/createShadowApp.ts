@@ -2,9 +2,9 @@ import {
   createApp,
   getCurrentInstance,
   h,
-  CreateAppFunction,
-  ComponentPublicInstance,
-  ComponentInternalInstance,
+  type CreateAppFunction,
+  type ComponentPublicInstance,
+  type ComponentInternalInstance,
 } from 'vue'
 import './arguments'
 

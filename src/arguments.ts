@@ -1,15 +1,14 @@
+import type { ComponentCustomElementInterface } from 'vue'
+
 declare module 'vue' {
-    interface ComponentInternalInstance {
-        isCE: boolean;
-        shadowRoot: ShadowRoot;
-        _childStylesAnchor?: Element;
-        _styles?: HTMLStyleElement[];
-        addCEChildStyle: (
-            styles: string[] | undefined,
-            instance: ComponentInternalInstance,
-        ) => void;
-        removeCEChildStyle: (styles: string[] | undefined, uid: string) => void;
-    }
+  interface ComponentInternalInstance {
+    ce?: ComponentCustomElementInterface
+    /**
+     * is custom element? (kept only for compatibility)
+     * @internal
+     */
+    isCE?: boolean
+  }
 }
 
-export {};
+export {}
