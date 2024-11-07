@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+
+defineOptions({
+  name: 'MyApp',
+})
 </script>
 
 <template>
   <header>
+    <ElButton>Hello</ElButton>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
@@ -17,6 +22,9 @@ import TheWelcome from './components/TheWelcome.vue'
   </main>
 </template>
 
+<style>
+@import './assets/main.css';
+</style>
 <style scoped>
 header {
   line-height: 1.5;
