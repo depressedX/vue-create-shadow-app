@@ -1,3 +1,4 @@
+/* eslint-disable vue/prefer-import-from-vue */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   type App,
@@ -8,8 +9,11 @@ import {
   h,
   defineComponent,
   type ComponentInternalInstance,
+  ref,
+  onMounted,
 } from 'vue'
 import { extend, hyphenate, isPlainObject } from '@vue/shared'
+import type { ExtractPublicPropsFromSFCComponent } from './vue-utils'
 
 export interface CustomElementOptions {
   styles?: string[]
@@ -28,13 +32,11 @@ interface FakeElement extends HTMLElement {
   _instance: ComponentInternalInstance | null
 }
 
-// overload 2: defineCustomElement with options object, infer props from options
-export function createShadowApp(
-  rootComponent: CustomElementOptions & Component,
-
-  rootProps: any,
+export function createShadowApp<HostElement, C extends Component>(
+  rootComponent: C,
+  rootProps: ExtractPublicPropsFromSFCComponent<C>,
   extraOptions?: CustomElementOptions,
-): App {
+): App<HostElement> {
   const Comp = defineComponent(rootComponent as any, extraOptions as any) as any
   if (isPlainObject(Comp)) extend(Comp, extraOptions)
 
@@ -43,44 +45,42 @@ export function createShadowApp(
   // 模拟 custom element
   let fakeCE: FakeElement | null = null
 
-  const rawApp = createApp(
-    {
-      render: () => {
-        const vnode = h(rootComponent, { ref: 'root' })
+  const rawApp = createApp({
+    setup() {
+      // const app = createApp()
+      const rootInstance = ref(null)
 
-        return vnode
-      },
-      setup() {
-        // const app = createApp()
+      const instance = getCurrentInstance()
+      if (!instance) {
+        throw new Error('no instance')
+      }
 
-        const instance = getCurrentInstance()
-        if (!instance) {
-          throw new Error('no instance')
+      fakeCE!._instance = instance
+      instance.ce = fakeCE as any
+      instance.isCE = true // for vue-i18n backwards compat
+
+      const dispatch = (event: string, args: any[]) => {
+        fakeCE!.dispatchEvent(
+          new CustomEvent(
+            event,
+            isPlainObject(args[0]) ? extend({ detail: args }, args[0]) : { detail: args },
+          ),
+        )
+      }
+
+      instance.emit = (event: string, ...args: any[]) => {
+        dispatch(event, args)
+        if (hyphenate(event) !== event) {
+          dispatch(hyphenate(event), args)
         }
-
-        fakeCE!._instance = instance
-        instance.ce = fakeCE as any
-        instance.isCE = true // for vue-i18n backwards compat
-
-        const dispatch = (event: string, args: any[]) => {
-          fakeCE!.dispatchEvent(
-            new CustomEvent(
-              event,
-              isPlainObject(args[0]) ? extend({ detail: args }, args[0]) : { detail: args },
-            ),
-          )
-        }
-
-        instance.emit = (event: string, ...args: any[]) => {
-          dispatch(event, args)
-          if (hyphenate(event) !== event) {
-            dispatch(hyphenate(event), args)
-          }
-        }
-      },
+      }
+      onMounted(() => {
+        instance.exposed = {}
+        instance.exposeProxy = rootInstance.value
+      })
+      return () => h(rootComponent, { ...rootProps, ref: rootInstance })
     },
-    rootProps,
-  )
+  })
   const converted = Object.create(rawApp)
   converted.mount = (
     rootContainer: Element | string,
@@ -121,7 +121,7 @@ export function createShadowApp(
 
     shadowRoot = rootElm.attachShadow({ mode: 'open' })
 
-    const { styles } = rootComponent
+    const { styles } = Comp
 
     fakeCE._applyStyles(styles)
 

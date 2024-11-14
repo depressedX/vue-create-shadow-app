@@ -19,6 +19,7 @@
     "vue": "^3.5.12"
   },
   "devDependencies": {
+    "@popperjs/core": "^2.11.8",
     "@tsconfig/node20": "^20.1.4",
     "@types/node": "^20.17.6",
     "@vitejs/plugin-vue": "^5.1.4",
