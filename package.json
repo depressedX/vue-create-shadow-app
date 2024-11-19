@@ -1,6 +1,6 @@
 {
   "name": "vue-create-shadow-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "module": "dist/create-shadow-app.js",
   "types": "types/index.d.ts",
