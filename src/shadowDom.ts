@@ -19,7 +19,6 @@ export interface CustomElementOptions {
   styles?: string[]
   shadowRoot?: boolean
   nonce?: string
-  configureApp?: (app: App) => void
 }
 
 // content-script 无法使用 customElement 因此基于 HtmlElement 模拟
@@ -78,7 +77,13 @@ export function createShadowApp<HostElement, C extends Component>(
         instance.exposed = {}
         instance.exposeProxy = rootInstance.value
       })
-      return () => h(rootComponent, { ...rootProps, ref: rootInstance })
+      return () => {
+        const vnode = h(rootComponent, { ...rootProps, ref: rootInstance })
+        ;(vnode as any).ce = (instance: any) => {
+          instance.ce = instance.root.ce
+        }
+        return vnode
+      }
     },
   })
   const converted = Object.create(rawApp)

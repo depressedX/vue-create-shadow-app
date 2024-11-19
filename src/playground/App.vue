@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+import { useShadowRoot } from 'vue'
 
 defineOptions({
   name: 'MyApp',
@@ -13,20 +14,20 @@ const props = defineProps({
   },
 })
 
+const shadowRoot = useShadowRoot()
+
+console.log('shadowRoot From App.vue', shadowRoot)
+
 defineExpose({
   hello() {
     alert('hello!' + props.someProp)
   },
 })
-
-// const emit = defineEmits<{
-//   echo: [string]
-// }>()
 </script>
 
 <template>
   <header>
-    <ElButton @click="emit('echo', 'Helllo world')">Hello</ElButton>
+    <ElButton>Hello</ElButton>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">

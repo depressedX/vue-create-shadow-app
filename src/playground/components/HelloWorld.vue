@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { useShadowRoot } from 'vue'
+
 defineProps<{
   msg: string
 }>()
+
+const shadowRoot = useShadowRoot()
+
+console.log('shadowRoot', shadowRoot)
 </script>
 
 <template>

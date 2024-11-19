@@ -1,39 +1,28 @@
-# vue-shadow-dom-demo
+# vue-create-shadow-app
 
-This template should help get you started developing with Vue 3 in Vite.
+mount `vue(3.x)` App in shadowDom
 
-## Recommended IDE Setup
+## when to use
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+[Vue 3.5](https://blog.vuejs.org/posts/vue-3-5) has good support build vue in CustomElement mode, which is base on shadow dom. While if you dont want use the isolation ability without using custom element (eg. custom element is unavailable in chrome extension sandbox environment), try this library.
 
-## Type Support for `.vue` Imports in TS
+## How to use
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+It acts just like `createApp` in `vue`
 
-## Customize configuration
+And the 3rd parameter allows you to ship global styles like [vue.defineCustomElement](https://vuejs.org/api/custom-elements.html#definecustomelement).
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+```ts
+import { createShadowApp } from 'vue-create-shadow-app'
 
-## Project Setup
-
-```sh
-pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-pnpm dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
+const app = createShadowApp(
+  App,
+  {
+    someProp: 'someValue',
+  },
+  {
+    styles: [elementStyle, ...App.styles],
+  },
+)
+app.use(ElementPlus)
 ```

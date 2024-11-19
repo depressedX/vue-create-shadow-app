@@ -1,8 +1,8 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig, PluginOption } from 'vite'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteVueCESubStyle } from '@unplugin-vue-ce/sub-style'
+import { resolve } from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,12 +12,30 @@ export default defineConfig({
         customElement: true,
       },
     }),
-    // https://github.com/vuejs/core/issues/4662
-    // viteVueCESubStyle() as PluginOption,
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  build: {
+    minify: false,
+    lib: {
+      // Could also be a dictionary or array of multiple entry points
+      entry: resolve(__dirname, 'src/index.ts'),
+      name: 'createShadowApp',
+      // the proper extensions will be added
+      fileName: 'create-shadow-app',
+      formats: ['es'],
+    },
+    rollupOptions: {
+      // make sure to externalize deps that shouldn't be bundled
+      // into your library
+      external: (id) =>
+        !id.startsWith('\0') &&
+        !id.startsWith('.') &&
+        !id.startsWith('/') &&
+        !id.includes('plugin-vue2:normalizer'),
     },
   },
 })
