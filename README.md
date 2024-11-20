@@ -4,7 +4,9 @@ mount `vue(3.x)` App in shadowDom
 
 ## when to use
 
-[Vue 3.5](https://blog.vuejs.org/posts/vue-3-5) has good support build vue in CustomElement mode, which is base on shadow dom. While if you dont want use the isolation ability without using custom element (eg. custom element is unavailable in chrome extension sandbox environment), try this library.
+[Vue 3.5](https://blog.vuejs.org/posts/vue-3-5) has good support build vue in CustomElement mode, which is base on shadow dom.
+
+While if you want the isolation ability of shadow dom and dont want to use custom element (eg. custom element is unavailable in chrome extension sandbox environment), try this library.
 
 ## How to use
 
